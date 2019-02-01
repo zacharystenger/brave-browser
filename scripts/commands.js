@@ -17,6 +17,7 @@ const chromiumRebaseL10n = require('../lib/chromiumRebaseL10n')
 const createDist = require('../lib/createDist')
 const upload = require('../lib/upload')
 const test = require('../lib/test')
+const applyPatchesDelta = require('../lib/applyPatchesDelta')
 
 const parsedArgs = program.parseOptions(process.argv)
 
@@ -108,6 +109,11 @@ program
 program
   .command('update_patches')
   .action(updatePatches)
+
+program
+  .command('apply_patches_delta')
+  .arguments('[ref_range]')
+  .action(applyPatchesDelta)
 
 program
   .command('cibuild')
