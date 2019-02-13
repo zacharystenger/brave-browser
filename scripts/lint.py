@@ -27,6 +27,7 @@ def main(args):
   parser.add_option('--filter', action='append', metavar='-x,+y',
                     help='Comma-separated list of cpplint\'s category-filters')
   parser.add_option('--project_root')
+  parser.add_option('--base_branch')
   auth.add_auth_options(parser)
   options, args = parser.parse_args(args)
   auth_config = auth.extract_auth_config_from_options(options)
@@ -47,7 +48,11 @@ def main(args):
   os.chdir(settings.GetRoot())
   try:
     cl = git_cl.Changelist(auth_config=auth_config)
-    change = cl.GetChange(cl.GetCommonAncestorWithUpstream(), None)
+    if not options.base_branch:
+      base_branch = cl.GetUpstreamBranch()
+    else:
+      base_branch = options.base_branch
+    change = cl.GetChange(base_branch, None)
     files = [f.LocalPath() for f in change.AffectedFiles()]
     if not files:
       print('Cannot lint an empty CL')
